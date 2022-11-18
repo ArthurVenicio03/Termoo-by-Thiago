@@ -74,12 +74,7 @@ def GetCurrentVitoria(player):
     with arquivo as f:
         linhas = f.readlines()
         index_player = GetPlayerIndex(player)
-        count=0
-        for char in linhas[index_player]: #encontra index de :
-            if char == ":":
-                index_thing = count
-                break
-            count+=1
+        index_thing = linhas[index_player].find(":")
         index_vic = index_thing+1 #registra o index do valor de vitorias
         valor_vic = linhas[index_player][index_vic]
         f.close()
@@ -90,13 +85,8 @@ def GetCurrentDerrota(player):
     with arquivo as f:
         linhas = f.readlines()
         index_player = GetPlayerIndex(player)
-        count=0
-        for char in linhas[index_player]: #encontra index de :
-            if char == ";":
-                index_thing = count
-                break
-            count+=1
-        index_vic = index_thing+1 #registra o index do valor de vitorias
+        index_thing2 = linhas[index_player].find(";")
+        index_vic = index_thing2+1 #registra o index do valor de vitorias
         valor_vic = linhas[index_player][index_vic]
         f.close()
         return valor_vic
@@ -150,13 +140,15 @@ def ShowAllPlayers():
     arquivo = open(os.path.join(path[0],"jogadores.txt"), "r")
     with arquivo as f:
         linhas = f.readlines()
-        for i in range(len(linhas)):
-            jogations = GetPlayerName(i)
-            print("-"*30)
-            print(f"{jogations}:")
-            espaços = (" "*len(jogations))
-            print(f"{espaços}Vitórias: {cores.MakeStringColored(GetCurrentVitoria(jogations),'green')}")
-            print(f"{espaços}Jogos: {cores.MakeStringColored(str(int(GetCurrentDerrota(jogations))+int(GetCurrentVitoria(jogations))),'yellow')}")
-            print(f"{espaços}Derrotas: {cores.MakeStringColored(GetCurrentDerrota(jogations),'red')}")
-            print("-"*30)
-        f.close()
+        if linhas != "":
+            for i in range(len(linhas)):
+                jogations = GetPlayerName(i)
+                print("-"*30)
+                print(f"{jogations}:")
+                espaços = (" "*len(jogations))
+                jojos = int(GetCurrentVitoria(jogations))+int(GetCurrentDerrota(jogations))
+                print(f"{espaços}Vitórias: {cores.MakeStringColored(GetCurrentVitoria(jogations),'green')}")
+                print(f"{espaços}Jogos: {cores.MakeStringColored(str(jojos),'yellow')}")
+                print(f"{espaços}Derrotas: {cores.MakeStringColored(GetCurrentDerrota(jogations),'red')}")
+                print("-"*30)
+            f.close()
