@@ -16,12 +16,22 @@ except:
 else:
     import game_methods
 
+good_chars="QWERTYUIOPLKJHGFDSAZXCVBNMqwertyuioplkjhgfdsazxcvbnm1234567890"
+
 def Menu():
     print(("|"*15)+" JOGO "+("|"*15))
     print("Do Termo".center(36))
     print(" ")
     print(f"{cores.MakeStringColored('[0]','green')} Jogar\n{cores.MakeStringColored('[1]','yellow')} Jogadores\n{cores.MakeStringColored('[2]','red')} Sair\n")
     print("|"*36)
+
+def CheckName(name):
+    for l in name:
+            if l not in good_chars:
+                return False
+    if len(name) > 12:
+        return False
+    return True
 
 if game_methods.RunFileCheck(): #verifica se os arquivos .txt existem antes de começar o jogo
     while True: #Menu principal
@@ -36,9 +46,15 @@ if game_methods.RunFileCheck(): #verifica se os arquivos .txt existem antes de c
         inputmenu = input("-> ").strip() #pergunta o que o jogador quer fazer
 
         if inputmenu == "0": #se o jogador escolher jogar
-            player_name = input("Nome do jogador: ") #salva o nome do jogador em uma variável
+            while True:
+                player_name = input("Nome do jogador: ").strip() #salva o nome do jogador em uma variável
+                if CheckName(player_name):
+                    break
+                else:
+                    print("ERRO; Só são aceitos letras de A-Z e Números")
+
             palavra = game_methods.GiveRandomWord().upper().strip()
-            tries = 1
+            tries = 0
             print(palavra)
             palpites = []
             alfabeto = { #salva o estado das letras e reinicia com o loop
@@ -99,10 +115,10 @@ if game_methods.RunFileCheck(): #verifica se os arquivos .txt existem antes de c
                             else:
                                 liutras[letra] = 1
                             
-                        final_string=["","","","",""]
-                        cont_letter = {}
+                        final_string=["","","","",""] #onde vai ficar os caracteres
+                        cont_letter = {} #conta a quantidade de cada letra
 
-                        cont_green = 0
+                        cont_green = 0 #pra achar as posições
                         for letra in palpite:#verdes
                             if letra[1] == 'rp':
                                 final_string[cont_green] = f"{cores.MakeStringColored(letra[0],'green')}"
@@ -115,7 +131,7 @@ if game_methods.RunFileCheck(): #verifica se os arquivos .txt existem antes de c
                                 final_string[cont_green] = f"{cores.MakeStringColored(letra[0],'normal')}"
                                 cont_green+= 1
                                 
-                        cont_yellow = 0
+                        cont_yellow = 0 #pra achar as posições
                         for letra in palpite:#amarelas
                             if letra[1] == 'np':
                                 if letra[0] in cont_letter:
@@ -132,10 +148,11 @@ if game_methods.RunFileCheck(): #verifica se os arquivos .txt existem antes de c
                         new_end=end.strip()
                         print(new_end)
 
-                if tries==6: #verifica se ele já tentou 5 vezes e dá a derrota quando chega
+                if tries==5: #verifica se ele já tentou 5 vezes e dá a derrota quando chega
                     if game_methods.CheckRegister(player_name): #se o jogador está registrado
                         game_methods.RegisterDerrota(player_name)
-                        
+                        print(f"{cores.MakeStringColored('[!]','red')} Você perdeu!!! A palavra era '{palavra}'")
+                        sleep(1.5)
                     else: #se o jogador não está registrado
                         game_methods.RegisterPlayer(player_name)
                         game_methods.RegisterDerrota(player_name)
@@ -145,14 +162,10 @@ if game_methods.RunFileCheck(): #verifica se os arquivos .txt existem antes de c
 
                 while True: #verifica o input do usuário
                     resposta = input("Escreva seu palpite:> ").strip().upper() #pergunta o palpite do jogador
-                    if len(resposta) != 5:
-                        print("Esta palavra não contem apenas 5 letras")
-                        continue
-                    if resposta not in upper_all_words:
+                    if resposta in upper_all_words and len(resposta) == 5:
+                        break
+                    else:
                         print("Esta palavra não existe no português brasileiro")
-                        continue
-                    break
-                    
 
                 if resposta == palavra: #se o jogador acertar
 
