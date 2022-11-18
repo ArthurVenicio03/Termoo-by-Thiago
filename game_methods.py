@@ -32,7 +32,7 @@ def GiveRandomWord(): #Retorna uma palavra de 5 letras aleatória
 def RegisterPlayer(player): #registra o jogador no banco de dados txt
     arquivo = open(os.path.join(path[0],"jogadores.txt"), "a")
     with arquivo as f:
-        f.write(f"{player}:0:0\n")
+        f.write(f"{player}:0;0\n")
         f.close()
 
 def RegisterVitoria(player):
