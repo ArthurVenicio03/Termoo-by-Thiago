@@ -38,7 +38,7 @@ if game_methods.RunFileCheck(): #verifica se os arquivos .txt existem antes de c
         if inputmenu == "0": #se o jogador escolher jogar
             player_name = input("Nome do jogador: ") #salva o nome do jogador em uma variável
             palavra = game_methods.GiveRandomWord().upper().strip()
-            tries = 0
+            tries = 1
             print(palavra)
             palpites = []
             alfabeto = { #salva o estado das letras e reinicia com o loop
@@ -86,48 +86,62 @@ if game_methods.RunFileCheck(): #verifica se os arquivos .txt existem antes de c
                 print("\n"+"-"*52)
 
                 contations=1
-                for palpite in palpites: #mostra os ultimos palpites
-
+                for palpite in palpites: #mostra os ultimos palpites (não me pergunte como funciona nem eu sei)
+                                         #levou a aula do matheus inteira + meia hora pra fazer
                         print(f"{contations}ª", end=" - ")
-
-                        loutras = []
-                        for letra in palpite:
-                            liutras = []
-                            liutras[0] = letra[0]
-                            liutras[1] = letra[1]
-                            loutras.append(liutras)
-                        
-                        repetidas = []
-                        leetras = []
-                        for lonitras in loutras:
-                            if lonitras[0] in leetras:
-                                repetidas.append(lonitras[0])
+                        liutras = {} #dicionário com letras e posições
+                        loutras = "" #string com a palavra
+                        for letra in palpite: #regitra todas as letras do palpite em uma string
+                            loutras = f"{loutras}{letra[0]}"
+                        for letra in loutras: #registra a quantidade de aparições de cada letra em um dicionário
+                            if letra in liutras.keys():
+                                liutras[letra] = liutras[letra]+1
                             else:
-                                leetras.append(lonitras[0])
-                        
+                                liutras[letra] = 1
+                            
+                        final_string=["","","","",""]
+                        cont_letter = {}
 
-                        
-                        for letra in palpite:
-                            if letra[1] == 'ns':
-                                print(f"{cores.MakeStringColored(letra[0],'normal')}",end="")
-                            elif letra[1] == 'np':
-                                print(f"{cores.MakeStringColored(letra[0],'yellow')}",end="")
-                            elif letra[1] == 'rp':
-                                print(f"{cores.MakeStringColored(letra[0],'green')}",end="")
-                            elif letra[1] == 'ne':
-                                print(f"{cores.MakeStringColored(letra[0],'normal')}",end="")
+                        cont_green = 0
+                        for letra in palpite:#verdes
+                            if letra[1] == 'rp':
+                                final_string[cont_green] = f"{cores.MakeStringColored(letra[0],'green')}"
+                                cont_green+= 1
+                                if letra[0] in cont_letter:
+                                    cont_letter[letra[0]] = cont_letter[letra[0]] + 1
+                                else:
+                                    cont_letter[letra[0]] = 1
+                            else:
+                                final_string[cont_green] = f"{cores.MakeStringColored(letra[0],'normal')}"
+                                cont_green+= 1
+                                
+                        cont_yellow = 0
+                        for letra in palpite:#amarelas
+                            if letra[1] == 'np':
+                                if letra[0] in cont_letter:
+                                    if cont_letter[letra[0]] < palavra.count(letra[0]):
+                                        cont_letter[letra[0]] = cont_letter[letra[0]] + 1
+                                        final_string[cont_yellow] = f"{cores.MakeStringColored(letra[0],'yellow')}"
+                                else:
+                                    cont_letter[letra[0]] = 1
+                                    final_string[cont_yellow] = f"{cores.MakeStringColored(letra[0],'yellow')}"
+                            cont_yellow +=1
+
                         contations+=1
-                        print()
+                        end = "".join(final_string)
+                        new_end=end.strip()
+                        print(new_end)
 
-                if tries==5: #verifica se ele já tentou 5 vezes e dá a derrota quando chega
+                if tries==6: #verifica se ele já tentou 5 vezes e dá a derrota quando chega
                     if game_methods.CheckRegister(player_name): #se o jogador está registrado
                         game_methods.RegisterDerrota(player_name)
+                        
                     else: #se o jogador não está registrado
                         game_methods.RegisterPlayer(player_name)
                         game_methods.RegisterDerrota(player_name)
                         print(f"{cores.MakeStringColored('[!]','red')} Você perdeu!!! A palavra era '{palavra}'")
                         sleep(1.5)
-                        break
+                    break
 
                 while True: #verifica o input do usuário
                     resposta = input("Escreva seu palpite:> ").strip().upper() #pergunta o palpite do jogador
@@ -173,7 +187,7 @@ if game_methods.RunFileCheck(): #verifica se os arquivos .txt existem antes de c
                     palpites.append(palpite)
                     tries=tries+1
 
-        elif inputmenu == "1": #se o jogador escolher ver os dados dos jogadores
+        elif inputmenu == "1": #se o jogador escol11111her ver os dados dos jogadores
             game_methods.ShowAllPlayers()
             input("Digite qualquer caractere para voltar ao menu:> ")
         elif inputmenu == "2": #se o jogador escolher sair
