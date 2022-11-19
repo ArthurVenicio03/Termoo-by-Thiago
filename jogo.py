@@ -55,7 +55,6 @@ if game_methods.RunFileCheck(): #verifica se os arquivos .txt existem antes de c
 
             palavra = game_methods.GiveRandomWord().upper().strip()
             tries = 0
-            print(palavra)
             palpites = []
             alfabeto = { #salva o estado das letras e reinicia com o loop
                 'A':'ns', #ns = not selected
@@ -165,7 +164,7 @@ if game_methods.RunFileCheck(): #verifica se os arquivos .txt existem antes de c
                     if resposta in upper_all_words and len(resposta) == 5:
                         break
                     else:
-                        print("Esta palavra não existe no português brasileiro")
+                        print("Esta palavra não existe no português brasileiro, não contém o número de letras necessário,\ncontem acentuação de letras, ou não é uma respota válida.")
 
                 if resposta == palavra: #se o jogador acertar
 
