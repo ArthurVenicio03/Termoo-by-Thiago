@@ -24460,6 +24460,7 @@ areentos
 arei
 areia
 areias
+areio
 areis
 areja
 arejado

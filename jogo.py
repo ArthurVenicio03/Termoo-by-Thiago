@@ -16,7 +16,7 @@ except:
 else:
     import game_methods
 
-good_chars="QWERTYUIOPLKJHGFDSAZXCVBNMqwertyuioplkjhgfdsazxcvbnm1234567890"
+nickname_check_chars="QWERTYUIOPLKJHGFDSAZXCVBNMqwertyuioplkjhgfdsazxcvbnm1234567890"
 
 def Menu():
     print(("|"*15)+" JOGO "+("|"*15))
@@ -25,9 +25,9 @@ def Menu():
     print(f"{cores.MakeStringColored('[0]','green')} Jogar\n{cores.MakeStringColored('[1]','yellow')} Jogadores\n{cores.MakeStringColored('[2]','red')} Sair\n")
     print("|"*36)
 
-def CheckName(name):
+def CheckName(name): #validação do input do nome do jogador
     for l in name:
-            if l not in good_chars:
+            if l not in nickname_check_chars:
                 return False
     if len(name) > 12:
         return False
@@ -54,14 +54,14 @@ if game_methods.RunFileCheck(): #verifica se os arquivos .txt existem antes de c
                     print("ERRO; Só são aceitos letras de A-Z e Números")
 
             palavra = game_methods.GiveRandomWord().upper().strip()
-            tries = 0
-            palpites = []
+            tries = 0 #número de tentativas do jogador, vai aumentando até chegar a 5
+            palpites = [] #onde vão ser registrados os palpites
             alfabeto = { #salva o estado das letras e reinicia com o loop
                 'A':'ns', #ns = not selected
                 'B':'ns', #ne = non existent
                 'C':'ns', #np = not positioned
-                'D':'ns',
-                'E':'ns', #rp = right positioned
+                'D':'ns', #rp = right positioned
+                'E':'ns', 
                 'F':'ns',
                 'G':'ns',
                 'H':'ns',
@@ -99,53 +99,54 @@ if game_methods.RunFileCheck(): #verifica se os arquivos .txt existem antes de c
                     elif alfabeto[letter] == 'rp':
                         print(f"{cores.MakeStringColored(letter,'green')}",end=" ")
                 print("\n"+"-"*52)
+                num_palpites=1
+                for palpite in palpites: #mostra os ultimos palpites 
+                    
+                        print(f"{num_palpites}ª", end=" - ") #printa as posições dos palpites
+                        pos_letras = {} #dicionário com letras e posições
+                        string_palavra = "" #string com a palavra
 
-                contations=1
-                for palpite in palpites: #mostra os ultimos palpites (não me pergunte como funciona nem eu sei)
-                                         #levou a aula do matheus inteira + meia hora pra fazer
-                        print(f"{contations}ª", end=" - ")
-                        liutras = {} #dicionário com letras e posições
-                        loutras = "" #string com a palavra
-                        for letra in palpite: #regitra todas as letras do palpite em uma string
-                            loutras = f"{loutras}{letra[0]}"
-                        for letra in loutras: #registra a quantidade de aparições de cada letra em um dicionário
-                            if letra in liutras.keys():
-                                liutras[letra] = liutras[letra]+1
-                            else:
-                                liutras[letra] = 1
+                        for letra in palpite: #regitra todas as letras do palpite
+                            string_palavra = f"{string_palavra}{letra[0]}"
                             
-                        final_string=["","","","",""] #onde vai ficar os caracteres
-                        cont_letter = {} #conta a quantidade de cada letra
+                        for letra in string_palavra: #registra a quantidade de aparições de cada letra
+                            if letra in pos_letras.keys():
+                                pos_letras[letra] = pos_letras[letra]+1
+                            else:
+                                pos_letras[letra] = 1
+                            
+                        final_list=["","","","",""] #onde vai ficar os caracteres
+                        cont_letter = {} #conta a quantidade de letras que já apareceram 
 
-                        cont_green = 0 #pra achar as posições
+                        cont_green = 0 #vai servir para verificar em qual sessão do loop a letra vai estar
                         for letra in palpite:#verdes
                             if letra[1] == 'rp':
-                                final_string[cont_green] = f"{cores.MakeStringColored(letra[0],'green')}"
+                                final_list[cont_green] = f"{cores.MakeStringColored(letra[0],'green')}"
                                 cont_green+= 1
                                 if letra[0] in cont_letter:
                                     cont_letter[letra[0]] = cont_letter[letra[0]] + 1
                                 else:
                                     cont_letter[letra[0]] = 1
                             else:
-                                final_string[cont_green] = f"{cores.MakeStringColored(letra[0],'normal')}"
+                                final_list[cont_green] = f"{cores.MakeStringColored(letra[0],'normal')}"
                                 cont_green+= 1
                                 
-                        cont_yellow = 0 #pra achar as posições
+                        cont_yellow = 0 #vai servir para verificar em qual sessão do loop a letra vai estar
                         for letra in palpite:#amarelas
                             if letra[1] == 'np':
                                 if letra[0] in cont_letter:
                                     if cont_letter[letra[0]] < palavra.count(letra[0]):
                                         cont_letter[letra[0]] = cont_letter[letra[0]] + 1
-                                        final_string[cont_yellow] = f"{cores.MakeStringColored(letra[0],'yellow')}"
+                                        final_list[cont_yellow] = f"{cores.MakeStringColored(letra[0],'yellow')}"
                                 else:
                                     cont_letter[letra[0]] = 1
-                                    final_string[cont_yellow] = f"{cores.MakeStringColored(letra[0],'yellow')}"
+                                    final_list[cont_yellow] = f"{cores.MakeStringColored(letra[0],'yellow')}"
                             cont_yellow +=1
 
-                        contations+=1
-                        end = "".join(final_string)
-                        new_end=end.strip()
-                        print(new_end)
+                        num_palpites+=1
+                        palpite_com_espaços = "".join(final_list)
+                        palpite_colorido=palpite_com_espaços.strip()
+                        print(palpite_colorido)
 
                 if tries==5: #verifica se ele já tentou 5 vezes e dá a derrota quando chega
                     if game_methods.CheckRegister(player_name): #se o jogador está registrado
@@ -159,7 +160,7 @@ if game_methods.RunFileCheck(): #verifica se os arquivos .txt existem antes de c
                         sleep(1.5)
                     break
 
-                while True: #verifica o input do usuário
+                while True: #verifica o input do usuário e valida ou não
                     resposta = input("Escreva seu palpite:> ").strip().upper() #pergunta o palpite do jogador
                     if resposta in upper_all_words and len(resposta) == 5:
                         break
@@ -178,9 +179,14 @@ if game_methods.RunFileCheck(): #verifica se os arquivos .txt existem antes de c
                     sleep(1.5)
                     break
                 else: #se ele não acertar
-                    palpite = []
-                    for letra in range(0,5): #para cada letra no input
-                        if resposta[letra] in palavra: #se a letra estiver na resposta final
+
+                    palpite = [] #registra cada letra do palpite
+                                 #vai conter listas com as letras e seu estado
+                                 #exemplo: [A, 'ns'],[B,'np']
+
+                    #altera o estado das letras no dicionário do alfabeto
+                    for letra in range(0,5): 
+                        if resposta[letra] in palavra: #se a letra estiver na resposta certa
                             if resposta[letra] == palavra[letra]: #se a letra estiver na mesma posição
                                 lista = [resposta[letra],'rp']
                                 palpite.append(lista)
