@@ -1,0 +1,3 @@
+# jOGO TERMO DESEMVOLVIDO PARA TRABALHO DE FACULDADE ->
+
+Feito em python, terminal
